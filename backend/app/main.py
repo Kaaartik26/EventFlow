@@ -1,12 +1,20 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, Depends
 from app.database.database import Base, engine
-from app.database  import models
+from app.database import models
+from app.routers import auth
+from app.utils.auth import get_current_user
 
 app = FastAPI(title="EventFlow API")
 
 Base.metadata.create_all(bind=engine)
 
+app.include_router(auth.router)
+
 
 @app.get("/")
 def root():
     return {"message": "EventFlow API Running"}
+
+@app.get("/me")
+def read_current_user(current_user = Depends(get_current_user)):
+    return current_user
