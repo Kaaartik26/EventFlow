@@ -13,7 +13,7 @@ app.include_router(auth.router)
 
 @app.get("/")
 def root():
-    return {"message": "EventFlow API Running"}
+    return {"message": "EventFlow API Running Successfullu"}
 
 @app.get("/me")
 def read_current_user(current_user = Depends(get_current_user)):
