@@ -8,9 +8,8 @@ from app.config import SECRET_KEY, ALGORITHM, ACCESS_TOKEN_EXPIRE_MINUTES
 from app.database.database import get_db
 from app.database import models
 
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="auth/login")
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/auth/login")
 
-#Kuch to chal rha h
 def create_access_token(data: dict):
     to_encode = data.copy()
 
