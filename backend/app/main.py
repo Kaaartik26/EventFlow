@@ -3,11 +3,15 @@ from app.database.database import Base, engine
 from app.database import models
 from app.routers import auth
 from app.utils.auth import get_current_user
+from app.routers import bookings
+from app.routers import auth, events, bookings
 
 app = FastAPI(title="EventFlow API")
 
 Base.metadata.create_all(bind=engine)
 
+app.include_router(bookings.router)
+app.include_router(events.router)
 app.include_router(auth.router)
 
 
