@@ -1,384 +1,386 @@
 # EventFlow
-Mini-project shyt
 
-Build a full-stack mobile application called **EventFlow** for managing college events with a **faculty approval-based booking system**.
+A full-stack mobile application for managing college events with a **faculty approval-based booking system**.
 
-The system must allow:
+## 🎯 Overview
 
-* Admins/clubs to create event proposals
-* Faculty to approve/reject events
-* Students to view approved events and book time slots
+EventFlow is a comprehensive event management system that allows:
+- **Admins** to create clubs and events
+- **Faculty** to approve/reject event proposals
+- **Students** to view approved events and book time slots
 
----
+## 🧱 Tech Stack
 
-## 🧱 Tech Stack (MANDATORY)
+### Frontend
+- **React Native (Expo)** - Cross-platform mobile development
+- **TypeScript** - Type-safe development
+- **Expo Router** - File-based routing
+- **AsyncStorage** - Local data persistence
 
-Frontend:
+### Backend
+- **Python FastAPI** - Modern, fast web framework
+- **SQLAlchemy** - Python ORM
+- **PostgreSQL** - Primary database
+- **JWT** - Authentication tokens
+- **bcrypt** - Password hashing
 
-* React Native (Expo)
+### Architecture
+- **REST API** - Clean API design
+- **Role-based access control** - Secure permissions
+- **Dynamic slot generation** - Efficient resource management
 
-Backend:
+## 🚀 Quick Start
 
-* Python FastAPI
+### Prerequisites
+- Python 3.8+
+- Node.js 16+
+- PostgreSQL
+- Expo CLI
 
-Database:
+### Backend Setup
 
-* PostgreSQL
+1. **Navigate to backend directory**
+```bash
+cd backend
+```
 
-Other Requirements:
+2. **Create virtual environment**
+```bash
+python -m venv venv
+source venv/bin/activate  # On Windows: venv\Scripts\activate
+```
 
-* REST API architecture
-* JWT-based authentication
-* Clean, scalable folder structure
-* Production-ready practices
+3. **Install dependencies**
+```bash
+pip install -r requirements.txt
+```
 
----
+4. **Set up environment variables**
+Create `.env` file:
+```env
+DATABASE_URL=postgresql://username:password@localhost/eventflow
+SECRET_KEY=your-secret-key-here
+ALGORITHM=HS256
+ACCESS_TOKEN_EXPIRE_MINUTES=60
+```
 
-## 🧠 Core System Flow (IMPORTANT)
+5. **Run database migrations**
+```bash
+# The app will auto-create tables on first run
+```
 
-1. Admin creates event
-2. Admin submits event for approval
-3. Faculty reviews event
-4. Faculty approves/rejects
-5. ONLY approved events are visible to students
-6. Students book slots for approved events
+6. **Start the server**
+```bash
+uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
+```
 
----
+### Frontend Setup
 
-## 🔐 Authentication System
+1. **Navigate to frontend directory**
+```bash
+cd frontend
+```
 
-Roles:
+2. **Install dependencies**
+```bash
+npm install
+```
 
-* student
-* admin
-* faculty
+3. **Start the development server**
+```bash
+npm start
+```
 
-APIs:
+4. **Run on device/simulator**
+```bash
+# For Android
+npm run android
 
-Students/Admin:
+# For iOS
+npm run ios
 
-* POST /signup
-* POST /login
-* GET /me
+# For web
+npm run web
+```
 
-Faculty:
+## 📱 Features
 
-* POST /faculty/login
-* GET /faculty/me
+### 🔐 Authentication System
+- **Multi-role authentication**: Student, Admin, Faculty
+- **JWT-based security**: Secure token management
+- **Role-based routing**: Dynamic navigation based on user type
+- **Password hashing**: bcrypt encryption
 
-Requirements:
+### 👥 User Roles
 
-* Password hashing (bcrypt/passlib)
-* JWT authentication
-* Role-based access control
+#### Students
+- Browse approved events
+- View event details and available slots
+- Book time slots
+- Manage bookings
+- View personal profile
 
----
+#### Admins
+- Create and manage clubs
+- Create and manage events
+- Submit events for faculty approval
+- Monitor all system activity
+- View all bookings
+
+#### Faculty
+- Review pending event proposals
+- Approve/reject events with comments
+- View approval history
+- Monitor event system
+
+### 🎪 Event Management
+- **Event creation**: Detailed event information
+- **Club association**: Events linked to student clubs
+- **Approval workflow**: Faculty review process
+- **Status tracking**: Pending, Approved, Rejected
+
+### ⏰ Dynamic Slot System
+- **Real-time generation**: Slots created on-demand
+- **Capacity management**: Automatic booking limits
+- **Time-based validation**: Prevents conflicts
+- **No database storage**: Efficient memory usage
+
+### 📊 Booking System
+- **Slot selection**: Interactive time slot booking
+- **Capacity enforcement**: Maximum participant limits
+- **Double booking prevention**: Conflict resolution
+- **Booking management**: View and cancel bookings
 
 ## 🗄️ Database Schema
 
-### users
+### Core Tables
 
-* id
-* name
-* email (unique)
-* password
-* role (student/admin)
+#### Users
+```sql
+- id (PK)
+- name
+- email (unique)
+- password (hashed)
+- role (student/admin)
+- created_at
+```
 
-### faculty
+#### Faculty
+```sql
+- id (PK)
+- name
+- email (unique)
+- password (hashed)
+- department
+- created_at
+```
 
-* id
-* name
-* email (unique)
-* password
-* department
+#### Clubs
+```sql
+- id (PK)
+- name
+- description
+- created_by_id (FK to users)
+- created_at
+```
 
-### clubs
+#### Events
+```sql
+- id (PK)
+- title
+- description
+- club_id (FK to clubs)
+- start_time
+- end_time
+- slot_duration (minutes)
+- max_participants
+- status (pending/approved/rejected)
+- approved_by_id (FK to faculty, nullable)
+- rejection_comment (nullable)
+- created_at
+```
 
-* id
-* name
-* description
-* created_by (admin)
+#### Bookings
+```sql
+- id (PK)
+- user_id (FK to users)
+- event_id (FK to events)
+- slot_start
+- slot_end
+- created_at
+```
 
-### events
+## 🛣️ API Endpoints
 
-* id
-* title
-* description
-* club_id (FK)
-* start_time
-* end_time
-* slot_duration
-* max_participants
-* status (pending / approved / rejected)
-* approved_by (faculty_id, nullable)
-* rejection_comment (nullable)
+### Authentication
+- `POST /auth/signup` - User registration
+- `POST /auth/login` - User login
+- `POST /faculty/login` - Faculty login
+- `GET /auth/me` - Current user info
+- `GET /faculty/me` - Current faculty info
 
-### bookings
+### Clubs
+- `GET /clubs` - List all clubs
+- `POST /clubs` - Create club (admin only)
+- `GET /clubs/{id}` - Get club details
+- `PUT /clubs/{id}` - Update club (admin only)
+- `DELETE /clubs/{id}` - Delete club (admin only)
 
-* id
-* user_id (FK)
-* event_id (FK)
-* slot_start
-* slot_end
+### Events
+- `GET /events` - List events (filtered by user role)
+- `POST /events` - Create event (admin only)
+- `GET /events/{id}` - Get event details
+- `PUT /events/{id}` - Update event (admin only)
+- `DELETE /events/{id}` - Delete event (admin only)
+- `GET /events/{id}/slots` - Get available slots
+- `POST /events/{id}/submit-for-approval` - Submit for approval
+
+### Faculty
+- `GET /faculty/events/pending` - Pending events
+- `GET /faculty/events/reviewed` - Reviewed events
+- `GET /faculty/events/all` - All events
+- `PATCH /faculty/events/{id}` - Approve/reject event
+
+### Bookings
+- `POST /bookings/book-slot` - Book a slot
+- `GET /bookings/my-bookings` - User's bookings
+- `GET /bookings/all-bookings` - All bookings (admin)
+- `DELETE /bookings/{id}` - Cancel booking
+
+## 🔒 Security Features
+
+### Authentication
+- **JWT tokens**: Secure session management
+- **Password hashing**: bcrypt encryption
+- **Role-based access**: Permission enforcement
+- **Token expiration**: Automatic session timeout
+
+### Data Protection
+- **Input validation**: Pydantic schemas
+- **SQL injection prevention**: SQLAlchemy ORM
+- **CORS protection**: Cross-origin security
+- **Error handling**: Secure error responses
+
+### Access Control
+- **Role-based routing**: Dynamic navigation
+- **API permissions**: Endpoint protection
+- **Data filtering**: User-specific data access
+- **Audit trails**: Activity logging
+
+## 📱 Mobile Screens
+
+### Authentication Flow
+- **Login Screen**: Multi-role login
+- **Signup Screen**: User registration
+- **Role Selection**: Student/Admin/Faculty
+
+### Student Interface
+- **Events List**: Browse approved events
+- **Event Details**: View event information
+- **Slot Booking**: Select time slots
+- **My Bookings**: Manage bookings
+- **Profile**: User information
+
+### Admin Dashboard
+- **Dashboard Overview**: System statistics
+- **Club Management**: Create/edit clubs
+- **Event Management**: Create/manage events
+- **Booking Overview**: Monitor all bookings
+- **System Settings**: Admin configuration
+
+### Faculty Interface
+- **Pending Events**: Review proposals
+- **Event Review**: Approve/reject workflow
+- **Approval History**: Past decisions
+- **Faculty Profile**: Account information
+
+## 🎨 UI/UX Features
+
+### Design Principles
+- **Clean interface**: Modern, minimalist design
+- **Intuitive navigation**: Easy-to-use layouts
+- **Responsive design**: Works on all screen sizes
+- **Consistent theming**: Unified visual language
+
+### User Experience
+- **Loading states**: Visual feedback
+- **Error handling**: User-friendly messages
+- **Confirmation dialogs**: Prevent accidental actions
+- **Refresh functionality**: Real-time updates
+
+## 🔧 Development
+
+### Project Structure
+```
+EventFlow/
+├── backend/
+│   ├── app/
+│   │   ├── database/
+│   │   ├── routers/
+│   │   ├── schemas/
+│   │   ├── utils/
+│   │   └── main.py
+│   ├── requirements.txt
+│   └── .env
+├── frontend/
+│   ├── app/
+│   │   ├── (student)/
+│   │   ├── (admin)/
+│   │   ├── (faculty)/
+│   │   ├── auth/
+│   │   ├── context/
+│   │   └── services/
+│   ├── package.json
+│   └── app.json
+└── README.md
+```
+
+### Best Practices
+- **Clean architecture**: Separation of concerns
+- **Type safety**: TypeScript throughout
+- **Error handling**: Comprehensive error management
+- **Testing**: Unit and integration tests
+- **Documentation**: Clear code comments
+
+## 🚀 Deployment
+
+### Backend Deployment
+- **Platform**: Render, Railway, or similar
+- **Database**: PostgreSQL (Neon, Supabase)
+- **Environment**: Production configuration
+- **Monitoring**: Health checks and logging
+
+### Frontend Deployment
+- **Platform**: Expo Application Services
+- **Build**: APK for Android, IPA for iOS
+- **Distribution**: App Store, Google Play
+- **Updates**: Over-the-air updates
+
+## 🤝 Contributing
+
+### Development Workflow
+1. Fork the repository
+2. Create feature branch
+3. Make changes with tests
+4. Submit pull request
+5. Code review and merge
+
+### Code Standards
+- **Python**: PEP 8 compliance
+- **TypeScript**: Strict typing
+- **React**: Functional components
+- **Git**: Conventional commits
+
+## � License
+
+This project is licensed under the MIT License - see the LICENSE file for details.
+
+## � Support
+
+For issues and questions:
+- Create an issue on GitHub
+- Check existing documentation
+- Review API endpoints
+- Test with provided examples
 
 ---
-
-## 🏢 Club Management
-
-APIs:
-
-* GET /clubs
-* POST /clubs (admin only)
-* GET /clubs/{id}
-
----
-
-## 📅 Event Management
-
-APIs:
-
-* POST /events (admin only)
-* GET /events (ONLY approved events)
-* GET /events/{id} (only if approved OR admin/faculty)
-
----
-
-## 📩 Event Proposal System (CRITICAL FEATURE)
-
-### Submit for Approval
-
-API:
-
-* POST /events/{id}/submit-for-approval
-
-Logic:
-
-* Set event.status = "pending"
-
----
-
-### Faculty Views Pending Events
-
-API:
-
-* GET /faculty/events/pending
-
----
-
-### Faculty Approval/Rejection
-
-API:
-
-* PATCH /faculty/events/{id}
-
-Request body examples:
-
-Approve:
-{
-"status": "approved"
-}
-
-Reject:
-{
-"status": "rejected",
-"comment": "Timing conflicts with exams"
-}
-
-Logic:
-
-* Update status
-* Store approved_by or rejection_comment
-
----
-
-## ⚠️ Access Rules
-
-* Students can ONLY see events where status = approved
-* Booking is allowed ONLY if event is approved
-* Admin can see all events
-* Faculty can see all pending/reviewed events
-
----
-
-## ⏱️ Dynamic Slot Generation (IMPORTANT)
-
-DO NOT store slots in database.
-
-Generate slots dynamically using:
-
-* start_time
-* end_time
-* slot_duration
-
-API:
-
-* GET /events/{id}/slots
-
-Return:
-
-* slot_start
-* slot_end
-* remaining capacity (based on bookings)
-
----
-
-## 🎟️ Booking System
-
-APIs:
-
-* POST /book-slot
-* GET /my-bookings
-* DELETE /booking/{id}
-
-Rules:
-
-* Prevent double booking
-* Enforce slot capacity
-* Validate slot within event timing
-* Ensure event is approved
-
----
-
-## 🛠️ Admin Features
-
-APIs:
-
-* GET /all-events
-* DELETE /event/{id}
-* GET /all-bookings
-
-Admins can:
-
-* create clubs
-* create events
-* submit proposals
-* monitor system
-
----
-
-## 👩‍🏫 Faculty Features
-
-* View pending proposals
-* Approve/reject events
-* Add rejection comments
-
----
-
-## 📱 Frontend (React Native)
-
-Screens:
-
-Authentication:
-
-* Login Screen (Student/Admin)
-* Faculty Login Screen
-* Signup Screen
-
-Student:
-
-* Clubs List
-* Events List (approved only)
-* Event Details
-* Slot Selection
-* My Bookings
-
-Admin:
-
-* Create Club
-* Create Event
-* Submit for Approval
-* Admin Dashboard
-
-Faculty:
-
-* Pending Proposals Screen
-* Event Review Screen (Approve/Reject)
-
----
-
-## ⚙️ Backend Architecture
-
-Structure:
-
-app/
-
-* main.py
-* database.py
-* models/
-* schemas/
-* routes/
-* controllers/
-* services/
-* utils/
-* middleware/
-
-Requirements:
-
-* SQLAlchemy ORM
-* Pydantic validation
-* Dependency injection
-* Error handling
-* Environment variables
-
----
-
-## 🔐 Security
-
-* JWT authentication
-* Password hashing
-* Role-based authorization
-* Input validation
-
----
-
-## 🚀 Deployment (Optional)
-
-* Backend → Render / Railway
-* Database → Supabase / Neon
-* Frontend → Expo APK
-
----
-
-## ✅ Final Expected Outcome
-
-Students:
-
-* Login/signup
-* View approved events
-* View slots
-* Book slots
-* Manage bookings
-
-Admins:
-
-* Create clubs/events
-* Submit events for approval
-* Monitor system
-
-Faculty:
-
-* Review event proposals
-* Approve/reject with comments
-
----
-
-## 📌 Critical Constraints
-
-* Slots must NOT be stored in DB (generate dynamically)
-* Events must go through approval before visibility
-* Clean architecture required
-* Avoid hardcoding
-* Maintain scalability
-
----
-
-## 🎯 Goal
-
-Deliver a complete production-ready system with:
-
-* Faculty approval workflow
-* Dynamic slot booking
-* Secure authentication
-* Scalable backend
-
-.

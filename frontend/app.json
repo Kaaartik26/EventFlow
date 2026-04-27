@@ -1,0 +1,27 @@
+{
+  "expo": {
+    "name": "EventFlow",
+    "slug": "eventflow",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "scheme": "frontend",
+    "userInterfaceStyle": "automatic",
+    "ios": {
+      "supportsTablet": true
+    },
+    "android": {
+      "adaptiveIcon": {
+        "backgroundColor": "#E6F4FE"
+      }
+    },
+    "web": {
+      "output": "static"
+    },
+    "plugins": [
+      "expo-router"
+    ],
+    "experiments": {
+      "typedRoutes": true
+    }
+  }
+}
