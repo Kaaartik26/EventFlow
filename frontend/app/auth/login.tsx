@@ -35,11 +35,11 @@ export default function LoginScreen() {
       
       // Navigate based on user type
       if (userType === 'faculty') {
-        router.replace('/(faculty)');
+        router.replace('/faculty');
       } else if (userType === 'admin') {
-        router.replace('/(admin)');
+        router.replace('/admin');
       } else {
-        router.replace('/(student)');
+        router.replace('/student/events');
       }
     } catch (error: any) {
       Alert.alert('Login Error', error.response?.data?.detail || 'Login failed');
@@ -135,7 +135,7 @@ export default function LoginScreen() {
               onPress={() => router.push('/auth/signup')}
             >
               <Text style={styles.signupText}>
-                Don't have an account? Sign up
+                Do not have an account? Sign up
               </Text>
             </TouchableOpacity>
           </View>

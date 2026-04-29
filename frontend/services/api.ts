@@ -1,7 +1,47 @@
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import Constants from 'expo-constants';
+import { Platform } from 'react-native';
 
-const API_BASE_URL = 'http://192.168.1.10:8001';
+const API_PORT = '8000';
+
+const getDevServerHost = () => {
+  const constants = Constants as typeof Constants & {
+    manifest?: { debuggerHost?: string };
+    manifest2?: { extra?: { expoClient?: { hostUri?: string } } };
+  };
+
+  const hostUri =
+    Constants.expoConfig?.hostUri ||
+    constants.manifest2?.extra?.expoClient?.hostUri ||
+    constants.manifest?.debuggerHost;
+
+  return hostUri?.split(':')[0];
+};
+
+const getApiBaseUrl = () => {
+  const envUrl = process.env.EXPO_PUBLIC_API_BASE_URL;
+  if (envUrl) {
+    return envUrl.replace(/\/$/, '');
+  }
+
+  if (Platform.OS === 'web') {
+    return `http://localhost:${API_PORT}`;
+  }
+
+  const devServerHost = getDevServerHost();
+  if (devServerHost) {
+    return `http://${devServerHost}:${API_PORT}`;
+  }
+
+  if (Platform.OS === 'android') {
+    return `http://10.0.2.2:${API_PORT}`;
+  }
+
+  return `http://localhost:${API_PORT}`;
+};
+
+const API_BASE_URL = getApiBaseUrl();
 
 const api = axios.create({
   baseURL: API_BASE_URL,
@@ -63,18 +103,18 @@ export const authAPI = {
 
 // Club APIs
 export const clubAPI = {
-  getClubs: () => api.get('/clubs'),
+  getClubs: () => api.get('/clubs/'),
   getClub: (id: number) => api.get(`/clubs/${id}`),
-  createClub: (clubData: any) => api.post('/clubs', clubData),
+  createClub: (clubData: any) => api.post('/clubs/', clubData),
   updateClub: (id: number, clubData: any) => api.put(`/clubs/${id}`, clubData),
   deleteClub: (id: number) => api.delete(`/clubs/${id}`),
 };
 
 // Event APIs
 export const eventAPI = {
-  getEvents: () => api.get('/events'),
+  getEvents: () => api.get('/events/'),
   getEvent: (id: number) => api.get(`/events/${id}`),
-  createEvent: (eventData: any) => api.post('/events', eventData),
+  createEvent: (eventData: any) => api.post('/events/', eventData),
   updateEvent: (id: number, eventData: any) => api.put(`/events/${id}`, eventData),
   deleteEvent: (id: number) => api.delete(`/events/${id}`),
   getEventSlots: (id: number) => api.get(`/events/${id}/slots`),
@@ -86,8 +126,9 @@ export const facultyAPI = {
   getPendingEvents: () => api.get('/faculty/events/pending'),
   getReviewedEvents: () => api.get('/faculty/events/reviewed'),
   getAllEvents: () => api.get('/faculty/events/all'),
+  getEvent: (id: number) => api.get(`/faculty/events/${id}`),
   reviewEvent: (id: number, reviewData: any) => api.patch(`/faculty/events/${id}`, reviewData),
-  getMe: () => api.get('/auth/faculty/me'),
+  getMe: () => api.get('/faculty/me'),
 };
 
 // Booking APIs
