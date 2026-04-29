@@ -138,7 +138,12 @@ export default function FacultyDashboard() {
             <TouchableOpacity
               key={event.id}
               style={styles.eventCard}
-              onPress={() => router.push(`/faculty/events/${event.id}`)}
+              onPress={() =>
+                router.push({
+                  pathname: '/faculty/events/[id]',
+                  params: { id: event.id },
+                })
+              }
             >
               <Text style={styles.eventTitle}>{event.title}</Text>
               <Text style={styles.eventClub}>

@@ -1,11 +1,8 @@
 import React from 'react';
 import { Text } from 'react-native';
 import { Tabs } from 'expo-router';
-import { useAuth } from '../../context/AuthContext';
 
 export default function StudentLayout() {
-  const { user } = useAuth();
-
   return (
     <Tabs
       screenOptions={{

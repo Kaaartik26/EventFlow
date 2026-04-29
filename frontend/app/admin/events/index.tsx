@@ -10,7 +10,6 @@ import {
   Alert,
   Modal,
   TextInput,
-  Button,
   ScrollView,
 } from 'react-native';
 import { eventAPI, clubAPI } from '../../../services/api';
@@ -180,7 +179,12 @@ export default function EventsScreen() {
       <View style={styles.eventActions}>
         <TouchableOpacity
           style={styles.actionButton}
-          onPress={() => router.push(`/admin/events/${item.id}`)}
+          onPress={() =>
+            router.push({
+              pathname: '/admin/events/[id]',
+              params: { id: item.id },
+            })
+          }
         >
           <Text style={styles.actionButtonText}>View Details</Text>
         </TouchableOpacity>

@@ -10,7 +10,6 @@ import {
   Alert,
   Modal,
   TextInput,
-  Button,
 } from 'react-native';
 import { clubAPI } from '../../../services/api';
 import { useRouter } from 'expo-router';
@@ -114,7 +113,12 @@ export default function ClubsScreen() {
       
       <TouchableOpacity
         style={styles.viewEventsButton}
-        onPress={() => router.push(`/admin/clubs/${item.id}/events`)}
+        onPress={() =>
+          router.push({
+            pathname: '/admin/clubs/[id]/events',
+            params: { id: item.id },
+          })
+        }
       >
         <Text style={styles.viewEventsText}>View Events</Text>
       </TouchableOpacity>

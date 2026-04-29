@@ -130,7 +130,12 @@ export default function BookingsScreen() {
       
       <TouchableOpacity
         style={styles.viewEventButton}
-        onPress={() => router.push(`/student/events/${item.event_id}`)}
+        onPress={() =>
+          router.push({
+            pathname: '/student/events/[id]',
+            params: { id: item.event_id },
+          })
+        }
       >
         <Text style={styles.viewEventText}>View Event Details</Text>
       </TouchableOpacity>
@@ -152,7 +157,7 @@ export default function BookingsScreen() {
       
       {bookings.length === 0 ? (
         <View style={styles.emptyContainer}>
-          <Text style={styles.emptyText}>You haven't booked any events yet</Text>
+          <Text style={styles.emptyText}>You have not booked any events yet</Text>
           <TouchableOpacity
             style={styles.browseButton}
             onPress={() => router.push('/student/events')}

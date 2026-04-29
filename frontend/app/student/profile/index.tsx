@@ -6,10 +6,12 @@ import {
   TouchableOpacity,
   Alert,
 } from 'react-native';
+import { useRouter } from 'expo-router';
 import { useAuth } from '../../../context/AuthContext';
 
 export default function ProfileScreen() {
   const { user, logout } = useAuth();
+  const router = useRouter();
 
   const handleLogout = () => {
     Alert.alert(
@@ -20,7 +22,10 @@ export default function ProfileScreen() {
         {
           text: 'Yes',
           style: 'destructive',
-          onPress: logout,
+          onPress: async () => {
+            await logout();
+            router.replace('/auth/login');
+          },
         },
       ]
     );

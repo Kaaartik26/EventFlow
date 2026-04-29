@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useCallback, useState, useEffect } from 'react';
 import {
   View,
   Text,
@@ -42,7 +42,7 @@ export default function EventDetailScreen() {
   const router = useRouter();
   const { id } = useLocalSearchParams<{ id: string }>();
 
-  const loadEventDetails = async () => {
+  const loadEventDetails = useCallback(async () => {
     try {
       const [eventResponse, slotsResponse] = await Promise.all([
         eventAPI.getEvent(parseInt(id)),
@@ -58,11 +58,11 @@ export default function EventDetailScreen() {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [id, router]);
 
   useEffect(() => {
     loadEventDetails();
-  }, []);
+  }, [loadEventDetails]);
 
   const formatDateTime = (dateTimeString: string) => {
     const date = new Date(dateTimeString);

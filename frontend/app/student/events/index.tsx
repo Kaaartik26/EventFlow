@@ -62,7 +62,12 @@ export default function EventsScreen() {
   const renderEvent = ({ item }: { item: Event }) => (
     <TouchableOpacity
       style={styles.eventCard}
-      onPress={() => router.push(`/events/${item.id}`)}
+      onPress={() =>
+        router.push({
+          pathname: '/student/events/[id]',
+          params: { id: item.id },
+        })
+      }
     >
       <Text style={styles.eventTitle}>{item.title}</Text>
       <Text style={styles.eventDescription} numberOfLines={2}>

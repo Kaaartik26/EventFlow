@@ -149,7 +149,12 @@ export default function PendingEventsScreen() {
         
         <TouchableOpacity
           style={[styles.actionButton, styles.detailsButton]}
-          onPress={() => router.push(`/faculty/events/${item.id}`)}
+          onPress={() =>
+            router.push({
+              pathname: '/faculty/events/[id]',
+              params: { id: item.id },
+            })
+          }
         >
           <Text style={styles.detailsButtonText}>📋 Details</Text>
         </TouchableOpacity>
